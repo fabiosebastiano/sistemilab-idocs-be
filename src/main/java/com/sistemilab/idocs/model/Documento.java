@@ -11,40 +11,73 @@ public class Documento {
     @Column(name = "id", nullable = false)
     private Long id;
 
-    @Column(name = "nome", nullable = false, length = 16)
+    @Column(name = "nome", nullable = false)
     private String nome;
 
-    @Column(name = "formato", nullable = false)
-    private String formato;
+    @Column(name = "estensione", nullable = false, length = 16)
+    private String estensione;
 
-    @Column(name = "approvato", nullable = false)
-    private Boolean approvato = false;
+    @Column(name = "dimensione", nullable = false)
+    private Integer dimensione;
 
-    @Column(name = "data_approvazione")
-    private LocalDate dataApprovazione;
+    @Column(name = "stato", nullable = false, length = 16)
+    private String stato;
 
-    public LocalDate getDataApprovazione() {
-        return dataApprovazione;
+    @Column(name = "data_cambio_stato")
+    private LocalDate dataCambioStato;
+
+    @Column(name = "eliminato")
+    private Boolean eliminato;
+
+    @Column(name = "data_eliminazione")
+    private LocalDate dataEliminazione;
+
+    public LocalDate getDataEliminazione() {
+        return dataEliminazione;
     }
 
-    public void setDataApprovazione(LocalDate dataApprovazione) {
-        this.dataApprovazione = dataApprovazione;
+    public void setDataEliminazione(LocalDate dataEliminazione) {
+        this.dataEliminazione = dataEliminazione;
     }
 
-    public Boolean getApprovato() {
-        return approvato;
+    public Boolean getEliminato() {
+        return eliminato;
     }
 
-    public void setApprovato(Boolean approvato) {
-        this.approvato = approvato;
+    public void setEliminato(Boolean eliminato) {
+        this.eliminato = eliminato;
     }
 
-    public String getFormato() {
-        return formato;
+    public LocalDate getDataCambioStato() {
+        return dataCambioStato;
     }
 
-    public void setFormato(String formato) {
-        this.formato = formato;
+    public void setDataCambioStato(LocalDate dataCambioStato) {
+        this.dataCambioStato = dataCambioStato;
+    }
+
+    public String getStato() {
+        return stato;
+    }
+
+    public void setStato(String stato) {
+        this.stato = stato;
+    }
+
+    public Integer getDimensione() {
+        return dimensione;
+    }
+
+    public void setDimensione(Integer dimensione) {
+        this.dimensione = dimensione;
+    }
+
+    public String getEstensione() {
+        return estensione;
+    }
+
+    public void setEstensione(String estensione) {
+        this.estensione = estensione;
     }
 
     public String getNome() {

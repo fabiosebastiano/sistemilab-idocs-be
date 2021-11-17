@@ -41,17 +41,26 @@ public class ProgettoService {
     public List<Progetto> list(@PathParam(value = "customerId") String customerId) throws Failure, WebApplicationException {
         Cliente cliente = clienteRepository.findById(Long.parseLong(customerId));
         LOG.info("Progetti del cliente " + customerId);
-        LOG.info(cliente.getProgetti().stream().collect(Collectors.toList()));
+
+        //LOG.info(cliente.getProgetti().stream().collect(Collectors.toList()));
         return cliente.getProgetti().stream().collect(Collectors.toList());
     }
 
+    @GET
+    @Path("/single/{projectId}")
+    public Progetto getSingoloProgetto(@PathParam(value = "projectId") String projectId) throws Failure, WebApplicationException {
+        Progetto progetto = progettoRepository.findById(Long.parseLong(projectId));
+        LOG.info("GET SINGOLO CLIENTE");
 
+        return progetto;
+    }
     @POST
     @Transactional
     public Response createProgetto(@Valid CreateProgettoRequest createProgettoRequest) throws Failure, WebApplicationException {
-        LOG.info("PROGETTO CREATION START");
-        LOG.info(createProgettoRequest.
-                getNome());
+        LOG.info("PROGETTO CREATION START for customer "+ createProgettoRequest.getIdCliente());
+        if(createProgettoRequest.getIdCliente() == null){
+            return new ServerResponse("ID CLIENTE MANCANTE", 400, new Headers<Object>());
+        }
         Progetto progetto = new Progetto();
         progetto.setNome(createProgettoRequest.getNome());
         progetto.setDescrizione(createProgettoRequest.getDescrizione());
@@ -72,14 +81,32 @@ public class ProgettoService {
 
             LOG.info("CLIENTI DELL'UTENTE " + createProgettoRequest.getIdCliente() + " DOPO L'AGGIORNAMENTO: " + cliente.getProgetti().stream().count());
 
-
         } catch (Exception e) {
             return new ServerResponse(e.getMessage(), 500, new Headers<Object>());
         }
 
         Response.ResponseBuilder rb = Response.ok(progetto);
         return rb.build();
-
     }
+
+    @DELETE
+    @Transactional
+    @Path("/{idProgetto}")
+    public Response deleteProgetto(@PathParam(value = "idProgetto") String idProgetto)throws Failure, WebApplicationException {
+        LOG.info("PROGETTO DELETE START");
+        try {
+            Progetto progetto = progettoRepository.findById(Long.parseLong(idProgetto));
+            if (progetto != null)
+                progettoRepository.delete(progetto);
+            else
+                return new ServerResponse("Progetto non presente in base dati", 500, new Headers<Object>());
+
+        } catch (Exception e) {
+            return new ServerResponse(e.getMessage(), 500, new Headers<Object>());
+        }
+        Response.ResponseBuilder rb = Response.ok();
+        return rb.build();
+    }
+
 
 }

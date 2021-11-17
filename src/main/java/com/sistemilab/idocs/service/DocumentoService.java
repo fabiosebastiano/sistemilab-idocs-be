@@ -1,20 +1,16 @@
 package com.sistemilab.idocs.service;
 
-import com.sistemilab.idocs.model.Cliente;
 import com.sistemilab.idocs.model.Documento;
 import com.sistemilab.idocs.model.Progetto;
-import com.sistemilab.idocs.repository.ClienteRepository;
 import com.sistemilab.idocs.repository.DocumentoRepository;
 import com.sistemilab.idocs.repository.ProgettoRepository;
 import com.sistemilab.idocs.resource.CreateDocumentoRequest;
-import com.sistemilab.idocs.resource.CreateProgettoRequest;
 import org.jboss.logging.Logger;
 import org.jboss.resteasy.core.Headers;
 import org.jboss.resteasy.core.ServerResponse;
 import org.jboss.resteasy.spi.Failure;
 
 import javax.inject.Inject;
-import javax.print.Doc;
 import javax.transaction.Transactional;
 import javax.validation.Valid;
 import javax.ws.rs.*;
@@ -57,8 +53,10 @@ public class DocumentoService {
         LOG.info(createDocumentoRequest.getNome());
         Documento documento = new Documento();
         documento.setNome(createDocumentoRequest.getNome());
-        documento.setFormato(createDocumentoRequest.getFormato());
-        documento.setApprovato(false);
+        documento.setEstensione(createDocumentoRequest.getEstensione());
+        documento.setDimensione(createDocumentoRequest.getDimensione());
+        documento.setStato("DA APPROVARE");
+       // documento.setApprovato(false);
 
         try {
             documentoRepository.create(documento);
@@ -88,12 +86,12 @@ public class DocumentoService {
 
     @PUT
     @Transactional
-    @Path("/{documentId}")
+    @Path("/approva/{documentId}")
     public Response approvaDocumento(@PathParam(value = "documentId") String documentId) throws Failure, WebApplicationException {
         LOG.info("DOC APPROVAL START "+ documentId);
         Documento documento = documentoRepository.findById(Long.parseLong(documentId));
-        documento.setApprovato(true);
-        documento.setDataApprovazione(LocalDate.now());
+        documento.setStato("APPROVATO");
+        documento.setDataCambioStato(LocalDate.now());
 
         try {
             documentoRepository.persistAndFlush(documento);
@@ -106,6 +104,47 @@ public class DocumentoService {
         Response.ResponseBuilder rb = Response.ok(documento);
         return rb.build();
 
+    }
+
+    @PUT
+    @Transactional
+    @Path("/rifiuta/{documentId}")
+    public Response rifiutaDocumento(@PathParam(value = "documentId") String documentId) throws Failure, WebApplicationException {
+        LOG.info("DOC REFUSE START "+ documentId);
+        Documento documento = documentoRepository.findById(Long.parseLong(documentId));
+        documento.setStato("RIFIUTATO");
+        documento.setDataCambioStato(LocalDate.now());
+
+        try {
+            documentoRepository.persistAndFlush(documento);
+
+
+        } catch (Exception e) {
+            return new ServerResponse(e.getMessage(), 500, new Headers<Object>());
+        }
+
+        Response.ResponseBuilder rb = Response.ok(documento);
+        return rb.build();
+
+    }
+
+    @DELETE
+    @Transactional
+    @Path("/{idDocumento}")
+    public Response deleteDocumento(@PathParam(value = "idDocumento") String idDocumento)throws Failure, WebApplicationException {
+        LOG.info("DOCUMENTO DELETE START");
+        try {
+            Documento documento = documentoRepository.findById(Long.parseLong(idDocumento));
+            if (documento != null)
+                documentoRepository.delete(documento);
+            else
+                return new ServerResponse("Documento non presente in base dati", 500, new Headers<Object>());
+
+        } catch (Exception e) {
+            return new ServerResponse(e.getMessage(), 500, new Headers<Object>());
+        }
+        Response.ResponseBuilder rb = Response.ok();
+        return rb.build();
     }
 
 }

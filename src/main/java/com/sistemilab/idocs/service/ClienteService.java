@@ -44,11 +44,42 @@ public class ClienteService {
         return utente.getClienti().stream().collect(Collectors.toList());
     }
 
+
+    @GET
+    @Path("/single/{customerId}")
+    public Cliente getSingoloCliente(@PathParam(value = "customerId") String customerId) throws Failure, WebApplicationException {
+        Cliente cliente = clienteRepository.findById(Long.parseLong(customerId));
+        LOG.info("GET SINGOLO CLIENTE");
+
+        return cliente;
+    }
+
+    @DELETE
+    @Transactional
+    @Path("/{idCliente}")
+    public Response deleteCliente(@PathParam(value = "idCliente") String idCliente)throws Failure, WebApplicationException {
+        LOG.info("CLIENTE DELETE START");
+        try {
+            Cliente cliente = clienteRepository.findById(Long.parseLong(idCliente));
+            if (cliente != null)
+                clienteRepository.delete(cliente);
+            else
+                return new ServerResponse("Cliente non presente in base dati", 500, new Headers<Object>());
+
+        } catch (Exception e) {
+            return new ServerResponse(e.getMessage(), 500, new Headers<Object>());
+        }
+        Response.ResponseBuilder rb = Response.ok();
+        return rb.build();
+    }
+
     @POST
     @Transactional
     public Response createCliente(@Valid CreateClienteRequest createClienteRequest) throws Failure, WebApplicationException {
         LOG.info("USER CREATION START");
-        LOG.info(createClienteRequest.getRagioneSociale());
+        if(createClienteRequest.getIdUtente() == null){
+            return new ServerResponse("ID UTENTE MANCANTE", 400, new Headers<Object>());
+        }
         Cliente cliente = new Cliente();
                 cliente.setRagioneSociale(createClienteRequest.getRagioneSociale());
                 cliente.setPartitaIva(createClienteRequest.getPartitaIva());
@@ -65,13 +96,11 @@ public class ClienteService {
 
             LOG.info("CLIENTI DELL'UTENTE " + createClienteRequest.getIdUtente() + " PRIMA DELL'AGGIORNAMENTO: " + clienti.stream().count());
 
-
             clienti.add(cliente);
             utente.setClienti(clienti);
             utenteRepository.persistAndFlush(utente);
 
             LOG.info("CLIENTI DELL'UTENTE " + createClienteRequest.getIdUtente() + " DOPO L'AGGIORNAMENTO: " + utente.getClienti().stream().count());
-
 
         } catch (Exception e) {
             return new ServerResponse(e.getMessage(), 500, new Headers<Object>());
@@ -79,6 +108,6 @@ public class ClienteService {
 
         Response.ResponseBuilder rb = Response.ok(cliente);
         return rb.build();
-
     }
+
 }

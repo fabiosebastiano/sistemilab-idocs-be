@@ -13,13 +13,14 @@ public class CreateDocumentoRequest {
     @NotBlank(message = "nome may not be blank")
     private String nome;
 
-    @NotBlank(message = "formato may not be blank")
-    private String formato;
+    @NotBlank(message = "estensione may not be blank")
+    private String estensione;
 
-    private Boolean approvato = false;
+    private Integer dimensione;
 
-    private LocalDate dataApprovazione;
+    private String stato = "DA APPROVARE";
 
+    private LocalDate dataCambioStato;
 
     public Long getIdProgetto() {
         return idProgetto;
@@ -37,29 +38,14 @@ public class CreateDocumentoRequest {
         this.nome = nome;
     }
 
-    public String getFormato() {
-        return formato;
+    public String getEstensione() {
+        return estensione;
     }
 
-    public void setFormato(String formato) {
-        this.formato = formato;
+    public void setEstensione(String estensione) {
+        this.estensione = estensione;
     }
 
-    public Boolean getApprovato() {
-        return approvato;
-    }
-
-    public void setApprovato(Boolean approvato) {
-        this.approvato = approvato;
-    }
-
-    public LocalDate getDataApprovazione() {
-        return dataApprovazione;
-    }
-
-    public void setDataApprovazione(LocalDate dataApprovazione) {
-        this.dataApprovazione = dataApprovazione;
-    }
 
     public Long getIdDocumento() {
         return idDocumento;
@@ -67,5 +53,29 @@ public class CreateDocumentoRequest {
 
     public void setIdDocumento(Long idDocumento) {
         this.idDocumento = idDocumento;
+    }
+
+    public Integer getDimensione() {
+        return dimensione;
+    }
+
+    public void setDimensione(Integer dimensione) {
+        this.dimensione = dimensione;
+    }
+
+    public String getStato() {
+        return stato;
+    }
+
+    public void setStato(String stato) {
+        this.stato = stato;
+    }
+
+    public LocalDate getDataCambioStato() {
+        return dataCambioStato;
+    }
+
+    public void setDataCambioStato(LocalDate dataCambioStato) {
+        this.dataCambioStato = dataCambioStato;
     }
 }
