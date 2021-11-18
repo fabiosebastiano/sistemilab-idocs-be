@@ -40,9 +40,7 @@ public class ProgettoService {
     @Path("/{customerId}")
     public List<Progetto> list(@PathParam(value = "customerId") String customerId) throws Failure, WebApplicationException {
         Cliente cliente = clienteRepository.findById(Long.parseLong(customerId));
-        LOG.info("Progetti del cliente " + customerId);
-
-        //LOG.info(cliente.getProgetti().stream().collect(Collectors.toList()));
+        LOG.info("Progetti del cliente " + customerId + " in tutto " + cliente.getProgetti().stream().collect(Collectors.counting()));
         return cliente.getProgetti().stream().collect(Collectors.toList());
     }
 

@@ -1,7 +1,6 @@
 package com.sistemilab.idocs.repository;
 
 import com.sistemilab.idocs.model.Cliente;
-import com.sistemilab.idocs.model.UtenteCliente;
 import io.quarkus.hibernate.orm.panache.PanacheRepository;
 import io.quarkus.panache.common.Parameters;
 
@@ -16,6 +15,7 @@ public class ClienteRepository implements PanacheRepository<Cliente> {
         return find("id = :customerId",
                 Parameters.with("customerId", customerId)).stream().collect(Collectors.toList());
     }
+
 
     public void create(Cliente cliente){
         persistAndFlush(cliente);

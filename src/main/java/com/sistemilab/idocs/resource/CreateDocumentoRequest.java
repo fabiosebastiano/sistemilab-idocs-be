@@ -18,9 +18,21 @@ public class CreateDocumentoRequest {
 
     private Integer dimensione;
 
+    private String descrizione;
+
     private String stato = "DA APPROVARE";
 
     private LocalDate dataCambioStato;
+
+    private LocalDate dataCaricamento;
+
+    public LocalDate getDataCaricamento() {
+        return dataCaricamento;
+    }
+
+    public void setDataCaricamento(LocalDate dataCaricamento) {
+        this.dataCaricamento = dataCaricamento;
+    }
 
     public Long getIdProgetto() {
         return idProgetto;
@@ -77,5 +89,13 @@ public class CreateDocumentoRequest {
 
     public void setDataCambioStato(LocalDate dataCambioStato) {
         this.dataCambioStato = dataCambioStato;
+    }
+
+    public String getDescrizione() {
+        return descrizione;
+    }
+
+    public void setDescrizione(String descrizione) {
+        this.descrizione = descrizione;
     }
 }

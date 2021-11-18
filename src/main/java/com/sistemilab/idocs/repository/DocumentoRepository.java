@@ -12,7 +12,7 @@ import java.util.stream.Collectors;
 public class DocumentoRepository implements PanacheRepository<Documento> {
 
     public List<Documento> findByProjectId(Integer projectId){
-        return find("id = :projectId and eliminato is not true",
+        return find("id = :projectId ORDER BY PROJECT_ID",
                 Parameters.with("projectId", projectId)).stream().collect(Collectors.toList());
     }
 

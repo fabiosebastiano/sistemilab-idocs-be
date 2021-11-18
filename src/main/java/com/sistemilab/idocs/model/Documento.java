@@ -20,32 +20,24 @@ public class Documento {
     @Column(name = "dimensione", nullable = false)
     private Integer dimensione;
 
+    @Column(name = "descrizione", nullable = true)
+    private String descrizione;
+
     @Column(name = "stato", nullable = false, length = 16)
     private String stato;
 
     @Column(name = "data_cambio_stato")
     private LocalDate dataCambioStato;
 
-    @Column(name = "eliminato")
-    private Boolean eliminato;
+    @Column(name = "data_caricamento")
+    private LocalDate dataCaricamento;
 
-    @Column(name = "data_eliminazione")
-    private LocalDate dataEliminazione;
-
-    public LocalDate getDataEliminazione() {
-        return dataEliminazione;
+    public LocalDate getDataCaricamento() {
+        return dataCaricamento;
     }
 
-    public void setDataEliminazione(LocalDate dataEliminazione) {
-        this.dataEliminazione = dataEliminazione;
-    }
-
-    public Boolean getEliminato() {
-        return eliminato;
-    }
-
-    public void setEliminato(Boolean eliminato) {
-        this.eliminato = eliminato;
+    public void setDataCaricamento(LocalDate dataCaricamento) {
+        this.dataCaricamento = dataCaricamento;
     }
 
     public LocalDate getDataCambioStato() {
@@ -94,5 +86,13 @@ public class Documento {
 
     public void setId(Long id) {
         this.id = id;
+    }
+
+    public String getDescrizione() {
+        return descrizione;
+    }
+
+    public void setDescrizione(String descrizione) {
+        this.descrizione = descrizione;
     }
 }

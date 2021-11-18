@@ -5,7 +5,9 @@ import io.quarkus.hibernate.orm.panache.PanacheRepository;
 import io.quarkus.panache.common.Parameters;
 
 import javax.enterprise.context.ApplicationScoped;
+import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @ApplicationScoped
 public class UtenteRepository implements PanacheRepository<Utente> {
@@ -18,6 +20,11 @@ public class UtenteRepository implements PanacheRepository<Utente> {
                 .findFirst();
     }
 
+    public List<Utente> findOtherUsers(Long userId){
+        return find("id <> :userId order by ID",
+                Parameters.with("userId", userId))
+                .stream().collect(Collectors.toList());
+    }
 
     public void create(Utente utente){
        persistAndFlush(utente);

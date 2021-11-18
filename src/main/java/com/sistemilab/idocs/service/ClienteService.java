@@ -5,7 +5,7 @@ import com.sistemilab.idocs.model.Utente;
 import com.sistemilab.idocs.repository.ClienteRepository;
 import com.sistemilab.idocs.repository.UtenteRepository;
 import com.sistemilab.idocs.resource.CreateClienteRequest;
-import com.sistemilab.idocs.resource.CreateUserRequest;
+import io.quarkus.panache.common.Parameters;
 import org.jboss.logging.Logger;
 import org.jboss.resteasy.core.Headers;
 import org.jboss.resteasy.core.ServerResponse;
@@ -16,8 +16,7 @@ import javax.transaction.Transactional;
 import javax.validation.Valid;
 import javax.ws.rs.*;
 import javax.ws.rs.core.Response;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Path("/customers")
@@ -39,17 +38,49 @@ public class ClienteService {
     @Path("/{userId}")
     public List<Cliente> list(@PathParam(value = "userId") String userId) throws Failure, WebApplicationException {
         Utente utente = utenteRepository.findById(Long.parseLong(userId));
-        LOG.info("clienti dell'utente " + userId);
-        LOG.info(utente.getClienti().stream().collect(Collectors.toList()));
+        LOG.info("clienti dell'utente " + userId + " in tutto " + utente.getClienti().stream().collect(Collectors.counting()));
+
         return utente.getClienti().stream().collect(Collectors.toList());
     }
 
+    @GET
+    @Path("/not/{userId}")
+    public List<Cliente> listCustomers(@PathParam(value = "userId") String userId) throws Failure, WebApplicationException {
+        List<Cliente> clientiOriginali = clienteRepository.findAll().stream().collect(Collectors.toList());
+        List<Cliente> clientiFinali = new ArrayList<Cliente>();
+        Utente utente = utenteRepository.findById(Long.parseLong(userId));
+        if( utente != null) {
+            List<Cliente> clientiDaEscludere = utente.getClienti().stream().collect(Collectors.toList());
+            Boolean clienteIsPresente = false;
+            for (Cliente cliente : clientiOriginali) {
+
+                LOG.info("CLIENTE A DB: " + cliente.getId());
+                clienteIsPresente = false;
+                for (Cliente clientePresente : clientiDaEscludere) {
+                    LOG.info("-CLIENTE GIA ASSOCIATO : " + clientePresente.getId());
+                    if (cliente.getId() == clientePresente.getId()) {
+                        clienteIsPresente = true;
+                    }
+
+                }
+                if (!clienteIsPresente) {
+                    clientiFinali.add(cliente);
+                    LOG.info("--CLIENTE NON ANCORA ASSOCIATO : " + cliente.getId());
+                }
+
+            }
+        }
+
+
+        LOG.info("GET CLIENTI NON ANCORA ASSOCIATI AD UTENTE "+ userId + " ha restituito "+ clientiFinali.size() + " clienti");
+        return clientiFinali;
+    }
 
     @GET
     @Path("/single/{customerId}")
     public Cliente getSingoloCliente(@PathParam(value = "customerId") String customerId) throws Failure, WebApplicationException {
         Cliente cliente = clienteRepository.findById(Long.parseLong(customerId));
-        LOG.info("GET SINGOLO CLIENTE");
+        LOG.info("GET SINGOLO CLIENTE "+ customerId);
 
         return cliente;
     }

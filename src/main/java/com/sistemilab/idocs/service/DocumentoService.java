@@ -50,14 +50,13 @@ public class DocumentoService {
     @Transactional
     public Response createDocumento(@Valid CreateDocumentoRequest createDocumentoRequest) throws Failure, WebApplicationException {
         LOG.info("DOC CREATION START");
-        LOG.info(createDocumentoRequest.getNome());
         Documento documento = new Documento();
         documento.setNome(createDocumentoRequest.getNome());
         documento.setEstensione(createDocumentoRequest.getEstensione());
         documento.setDimensione(createDocumentoRequest.getDimensione());
         documento.setStato("DA APPROVARE");
-       // documento.setApprovato(false);
-
+        documento.setDescrizione(createDocumentoRequest.getDescrizione());
+        documento.setDataCaricamento(LocalDate.now());
         try {
             documentoRepository.create(documento);
             LOG.info("DOC CREATO CON ID: " + documento.getId());

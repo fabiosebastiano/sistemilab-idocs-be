@@ -15,6 +15,7 @@ public class Cliente {
     @Column(name = "id", nullable = false)
     private Long id;
 
+
     @ManyToMany
     @JoinTable(name = "CLIENTE_PROGETTO",
             joinColumns = { @JoinColumn(name = "ID_CLIENTE") },
@@ -80,4 +81,6 @@ public class Cliente {
     public void setProgetti(Set<Progetto> progetti) {
         this.progetti = progetti;
     }
+
+
 }
