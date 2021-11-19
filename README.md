@@ -9,7 +9,7 @@ L'intero progetto utilizza una base dati PostgreSQL containerizzata che viene av
 ## Per avviare il container del db:
 
 ```shell script
-./bin./start_postgres.sh
+./bin/start_postgres.sh
 ```
 ## Per stoppare il container del db:
 
