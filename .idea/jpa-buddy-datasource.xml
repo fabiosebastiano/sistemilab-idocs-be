@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="JpbDataSourceConfig">
+    <data-sources>
+      <data-source id="63c5c2dd-b03b-4aeb-95e4-d2fd8bc056ea" name="idocs-be" url="jdbc:postgresql://localhost/idocs" driverClass="org.postgresql.Driver" />
+    </data-sources>
+  </component>
+</project>
