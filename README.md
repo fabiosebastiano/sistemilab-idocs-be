@@ -30,6 +30,8 @@ L'intero progetto utilizza una base dati PostgreSQL containerizzata che viene av
 ```
 
 ### TODO LIST
+- [ ] Utilizzare token JWT in tutte le chiamate
+- [ ] Salvataggio criptato della password dell'utente
 - [ ] Migliorare commenti
 - [ ] Migliorare test automaticci
 
