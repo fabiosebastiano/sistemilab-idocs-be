@@ -2,7 +2,7 @@
 
 Il progetto è stato scritto usando [Quarkus, the Supersonic Subatomic Java Framework](https://quarkus.io/) con GraalVM e Java 17 ed utilizza Maven per la gestione delle dipendenze e la build. 
 
-![The San Juan Mountains are beautiful!](/resources/quarkus.png "Quarkus")
+
 
 
 L'applicazione espone dei servizi REST esposti all'endpoint localhost:8080 testabili utilizzando la collection di Postman inclusa.
