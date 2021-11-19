@@ -38,7 +38,7 @@ public class ClienteService {
     @Path("/{userId}")
     public List<Cliente> list(@PathParam(value = "userId") String userId) throws Failure, WebApplicationException {
         Utente utente = utenteRepository.findById(Long.parseLong(userId));
-        LOG.info("clienti dell'utente " + userId + " in tutto " + utente.getClienti().stream().collect(Collectors.counting()));
+        LOG.info("clienti dell'utente " + userId + ": " + utente.getClienti().stream().collect(Collectors.counting()));
 
         return utente.getClienti().stream().collect(Collectors.toList());
     }
@@ -54,10 +54,8 @@ public class ClienteService {
             Boolean clienteIsPresente = false;
             for (Cliente cliente : clientiOriginali) {
 
-                LOG.info("CLIENTE A DB: " + cliente.getId());
                 clienteIsPresente = false;
                 for (Cliente clientePresente : clientiDaEscludere) {
-                    LOG.info("-CLIENTE GIA ASSOCIATO : " + clientePresente.getId());
                     if (cliente.getId() == clientePresente.getId()) {
                         clienteIsPresente = true;
                     }
@@ -65,12 +63,10 @@ public class ClienteService {
                 }
                 if (!clienteIsPresente) {
                     clientiFinali.add(cliente);
-                    LOG.info("--CLIENTE NON ANCORA ASSOCIATO : " + cliente.getId());
                 }
 
             }
         }
-
 
         LOG.info("GET CLIENTI NON ANCORA ASSOCIATI AD UTENTE "+ userId + " ha restituito "+ clientiFinali.size() + " clienti");
         return clientiFinali;

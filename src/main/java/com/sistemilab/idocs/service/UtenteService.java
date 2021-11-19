@@ -51,7 +51,6 @@ public class UtenteService {
     public List<Utente> getAllUsers(@PathParam(value = "userId") String userId) throws Failure, WebApplicationException {
         LOG.info("GET ALL USERS START");
 
-
         List<Utente> usersList = repository.findOtherUsers(Long.parseLong(userId));
 
         return usersList;
@@ -70,7 +69,6 @@ public class UtenteService {
 
         Optional<Utente> user = repository.findByUsernameAndPassword(authRequest.getUsername(), authRequest.getPassword());
         if ( user.isEmpty() ){
-            LOG.info("----utente vuoto");
             return ACCESS_DENIED;
         }else {
            // Response.ResponseBuilder rb = Response.ok(user.map(usr -> usr.getUsername()));
@@ -109,7 +107,7 @@ public class UtenteService {
     @Transactional
     @Path("/addCliente")
     public Response updateClientiAssociati(@Valid UpdateUserRequest updateRequest) throws Failure, WebApplicationException {
-        LOG.info("USER CUSTOMERS UPDATE START");
+        LOG.info("USER CUSTOMERS UPDATE START FOR USER " + updateRequest.getIdUtente() + " AND CUSTOMER "+ updateRequest.getIdClienteDaAggiungere());
        Utente utente = repository.findById(updateRequest.getIdUtente());
         if (utente != null) {
             Set<Cliente> listaClienti = utente.getClienti();
@@ -123,7 +121,6 @@ public class UtenteService {
                 } catch (Exception e) {
                     return new ServerResponse(e.getMessage(), 500, new Headers<Object>());
                 }
-
 
             }
 

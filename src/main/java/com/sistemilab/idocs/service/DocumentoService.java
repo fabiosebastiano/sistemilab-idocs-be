@@ -42,7 +42,6 @@ public class DocumentoService {
     public List<Documento> list(@PathParam(value = "projectId") String projectId) throws Failure, WebApplicationException {
         Progetto progetto = progettoRepository.findById(Long.parseLong(projectId));
         LOG.info("Documenti del progetto " + projectId);
-        LOG.info(progetto.getDocumenti().stream().collect(Collectors.toList()));
         return progetto.getDocumenti().stream().collect(Collectors.toList());
     }
 
