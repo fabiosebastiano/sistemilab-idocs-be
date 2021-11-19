@@ -26,5 +26,6 @@ L'intero progetto utilizza una base dati PostgreSQL containerizzata che viene av
 - [ ] Migliorare test automaticci
 
 ### NICE TO HAVE
+- [ ] Swagger Doc 
 - [ ] Pipeline di CI
 - [ ] Compose per lancio dell'intera applicazione (compreso il FE) con unico comando
