@@ -58,8 +58,7 @@ public class DocumentoService {
         documento.setDataCaricamento(LocalDate.now());
         try {
             documentoRepository.create(documento);
-            LOG.info("DOC CREATO CON ID: " + documento.getId());
-
+            
             Progetto progetto = progettoRepository.findById(createDocumentoRequest.getIdProgetto());
 
             Set<Documento> documenti = progetto.getDocumenti();
