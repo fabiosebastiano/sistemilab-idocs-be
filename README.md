@@ -6,7 +6,13 @@ L'applicazione espone dei servizi REST esposti all'endpoint localhost:8080 testa
 
 L'intero progetto utilizza una base dati PostgreSQL containerizzata che viene avviata/stoppata mediante script contenuti nella cartella /bin. Ad ogni avvio vengono precaricati alcuni dati che si possono trovare nel file /bin/data.sql.
 
-## Per avviare il container del db:
+## Per avviare l'intero backend:
+
+```shell script
+./bin/start_be.sh
+```
+
+## Per avviare il solo container del db:
 
 ```shell script
 ./bin/start_postgres.sh
@@ -17,7 +23,7 @@ L'intero progetto utilizza una base dati PostgreSQL containerizzata che viene av
 ./bin/stop_postgres.sh
 ```
 
-## Per eseguire l'applicazione in dev mode:
+## Per eseguire la sola applicazione in dev mode:
 
 ```shell script
 mvn compile quarkus:dev
