@@ -2,6 +2,7 @@ package com.sistemilab.idocs.model;
 
 import javax.persistence.*;
 import java.time.LocalDate;
+import java.util.Objects;
 
 @Table(name = "documento")
 @Entity
@@ -94,5 +95,32 @@ public class Documento {
 
     public void setDescrizione(String descrizione) {
         this.descrizione = descrizione;
+    }
+
+    @Override
+    public String toString() {
+        return "Documento{" +
+                "id=" + id +
+                ", nome='" + nome + '\'' +
+                ", estensione='" + estensione + '\'' +
+                ", dimensione=" + dimensione +
+                ", descrizione='" + descrizione + '\'' +
+                ", stato='" + stato + '\'' +
+                ", dataCambioStato=" + dataCambioStato +
+                ", dataCaricamento=" + dataCaricamento +
+                '}';
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Documento documento = (Documento) o;
+        return Objects.equals(id, documento.id) && Objects.equals(nome, documento.nome) && Objects.equals(estensione, documento.estensione) && Objects.equals(dimensione, documento.dimensione) && Objects.equals(descrizione, documento.descrizione) && Objects.equals(stato, documento.stato) && Objects.equals(dataCambioStato, documento.dataCambioStato) && Objects.equals(dataCaricamento, documento.dataCaricamento);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, nome, estensione, dimensione, descrizione, stato, dataCambioStato, dataCaricamento);
     }
 }

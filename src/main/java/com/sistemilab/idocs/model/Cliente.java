@@ -2,6 +2,7 @@ package com.sistemilab.idocs.model;
 
 import javax.persistence.*;
 import java.util.HashSet;
+import java.util.Objects;
 import java.util.Set;
 
 @Table(name = "cliente", indexes = {
@@ -15,7 +16,6 @@ public class Cliente {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id", nullable = false)
     private Long id;
-
 
     @ManyToMany
     @JoinTable(name = "CLIENTE_PROGETTO",
@@ -83,5 +83,28 @@ public class Cliente {
         this.progetti = progetti;
     }
 
+    @Override
+    public String toString() {
+        return "Cliente{" +
+                "id=" + id +
+                ", progetti=" + progetti +
+                ", ragioneSociale='" + ragioneSociale + '\'' +
+                ", partitaIva='" + partitaIva + '\'' +
+                ", nazione='" + nazione + '\'' +
+                ", descrizione='" + descrizione + '\'' +
+                '}';
+    }
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Cliente cliente = (Cliente) o;
+        return Objects.equals(id, cliente.id) && Objects.equals(progetti, cliente.progetti) && Objects.equals(ragioneSociale, cliente.ragioneSociale) && Objects.equals(partitaIva, cliente.partitaIva) && Objects.equals(nazione, cliente.nazione) && Objects.equals(descrizione, cliente.descrizione);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, progetti, ragioneSociale, partitaIva, nazione, descrizione);
+    }
 }

@@ -36,6 +36,14 @@ public class ProgettoService {
     }
 
 
+    /**
+     * Servizio che ritorna la lista di progetti associati ad un cliente
+     *
+     * @param customerId
+     * @return Lista di progetti
+     * @throws Failure
+     * @throws WebApplicationException
+     */
     @GET
     @Path("/{customerId}")
     public List<Progetto> list(@PathParam(value = "customerId") String customerId) throws Failure, WebApplicationException {
@@ -44,6 +52,13 @@ public class ProgettoService {
         return cliente.getProgetti().stream().collect(Collectors.toList());
     }
 
+    /**
+     * Servizio che ritorna il singolo progetto
+     * @param projectId
+     * @return
+     * @throws Failure
+     * @throws WebApplicationException
+     */
     @GET
     @Path("/single/{projectId}")
     public Progetto getSingoloProgetto(@PathParam(value = "projectId") String projectId) throws Failure, WebApplicationException {
@@ -52,6 +67,15 @@ public class ProgettoService {
 
         return progetto;
     }
+
+    /**
+     * Servizio per la creazione di un nuovo progetto
+     *
+     * @param createProgettoRequest
+     * @return Il progetto appena creato
+     * @throws Failure
+     * @throws WebApplicationException
+     */
     @POST
     @Transactional
     public Response createProgetto(@Valid CreateProgettoRequest createProgettoRequest) throws Failure, WebApplicationException {
@@ -65,19 +89,12 @@ public class ProgettoService {
 
         try {
             progettoRepository.create(progetto);
-            LOG.info("PROGETTO CREATO CON ID: " + progetto.getId());
 
             Cliente cliente = clienteRepository.findById(createProgettoRequest.getIdCliente());
-
             Set<Progetto> progetti = cliente.getProgetti();
-
-            LOG.info("PROGETTI DEL CLIENTE " + createProgettoRequest.getIdCliente() + " PRIMA DELL'AGGIORNAMENTO: " + progetti.stream().count());
-
             progetti.add(progetto);
             cliente.setProgetti(progetti);
             clienteRepository.persistAndFlush(cliente);
-
-            LOG.info("CLIENTI DELL'UTENTE " + createProgettoRequest.getIdCliente() + " DOPO L'AGGIORNAMENTO: " + cliente.getProgetti().stream().count());
 
         } catch (Exception e) {
             return new ServerResponse(e.getMessage(), 500, new Headers<Object>());
@@ -87,6 +104,14 @@ public class ProgettoService {
         return rb.build();
     }
 
+    /**
+     * Servizio per la cancellazione del progetto
+     *
+     * @param idProgetto
+     * @return
+     * @throws Failure
+     * @throws WebApplicationException
+     */
     @DELETE
     @Transactional
     @Path("/{idProgetto}")

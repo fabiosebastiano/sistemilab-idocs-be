@@ -34,6 +34,14 @@ public class ClienteService {
         this.utenteRepository   = utenteRepository;
     }
 
+    /**
+     * Servizio che ritorna la lista dei clienti dell'utente passato in input
+     *
+     * @param userId
+     * @return Lista di clienti
+     * @throws Failure
+     * @throws WebApplicationException
+     */
     @GET
     @Path("/{userId}")
     public List<Cliente> list(@PathParam(value = "userId") String userId) throws Failure, WebApplicationException {
@@ -43,6 +51,15 @@ public class ClienteService {
         return utente.getClienti().stream().collect(Collectors.toList());
     }
 
+    /**
+     * Ritorna la lista di clienti NON associati al cliente passato in input
+     * @TODO: possibile spostamento su UTENTE SERVICE ?
+     *
+     * @param userId
+     * @return
+     * @throws Failure
+     * @throws WebApplicationException
+     */
     @GET
     @Path("/not/{userId}")
     public List<Cliente> listCustomers(@PathParam(value = "userId") String userId) throws Failure, WebApplicationException {
@@ -72,6 +89,14 @@ public class ClienteService {
         return clientiFinali;
     }
 
+    /**
+     * Ritorna il cliente passato in input:
+     * @// TODO: Spostando in UTENTESERVICE i servizi di GET, questo diventa semplice GET
+     * @param customerId
+     * @return
+     * @throws Failure
+     * @throws WebApplicationException
+     */
     @GET
     @Path("/single/{customerId}")
     public Cliente getSingoloCliente(@PathParam(value = "customerId") String customerId) throws Failure, WebApplicationException {
@@ -81,6 +106,14 @@ public class ClienteService {
         return cliente;
     }
 
+    /**
+     * Servizio per la cancellazione del cliente
+     *
+     * @param idCliente
+     * @return
+     * @throws Failure
+     * @throws WebApplicationException
+     */
     @DELETE
     @Transactional
     @Path("/{idCliente}")
@@ -100,6 +133,14 @@ public class ClienteService {
         return rb.build();
     }
 
+    /**
+     * Servizio per la creazione del cliente
+     *
+     * @param createClienteRequest
+     * @return Il cliente appena creato
+     * @throws Failure
+     * @throws WebApplicationException
+     */
     @POST
     @Transactional
     public Response createCliente(@Valid CreateClienteRequest createClienteRequest) throws Failure, WebApplicationException {
@@ -112,22 +153,13 @@ public class ClienteService {
                 cliente.setPartitaIva(createClienteRequest.getPartitaIva());
                 cliente.setNazione(createClienteRequest.getNazione());
                 cliente.setDescrizione(createClienteRequest.getDescrizione());
-
         try {
             clienteRepository.create(cliente);
-            LOG.info("CLIENTE CREATO CON ID: " + cliente.getId());
-
             Utente utente = utenteRepository.findById(createClienteRequest.getIdUtente());
-
             Set<Cliente> clienti = utente.getClienti();
-
-            LOG.info("CLIENTI DELL'UTENTE " + createClienteRequest.getIdUtente() + " PRIMA DELL'AGGIORNAMENTO: " + clienti.stream().count());
-
             clienti.add(cliente);
             utente.setClienti(clienti);
             utenteRepository.persistAndFlush(utente);
-
-            LOG.info("CLIENTI DELL'UTENTE " + createClienteRequest.getIdUtente() + " DOPO L'AGGIORNAMENTO: " + utente.getClienti().stream().count());
 
         } catch (Exception e) {
             return new ServerResponse(e.getMessage(), 500, new Headers<Object>());

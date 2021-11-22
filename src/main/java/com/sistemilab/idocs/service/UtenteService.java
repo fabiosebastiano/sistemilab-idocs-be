@@ -45,18 +45,17 @@ public class UtenteService {
         this.clienteRepository = clienteRepository;
     }
 
-    @GET
-    @Consumes(MediaType.APPLICATION_JSON)
-    @Path("/{userId}")
-    public List<Utente> getAllUsers(@PathParam(value = "userId") String userId) throws Failure, WebApplicationException {
-        LOG.info("GET ALL USERS START");
 
-        List<Utente> usersList = repository.findOtherUsers(Long.parseLong(userId));
 
-        return usersList;
-
-    }
-
+    /**
+     * Servizio di LOGIN
+     * @// TODO: AGGIUNGERE GENERAZIONE TOKEN
+     *
+     * @param authRequest
+     * @return l'utente che ha effettuato la login
+     * @throws Failure
+     * @throws WebApplicationException
+     */
     @POST
     @Path("/login")
     @Consumes(MediaType.APPLICATION_JSON)
@@ -71,21 +70,42 @@ public class UtenteService {
         if ( user.isEmpty() ){
             return ACCESS_DENIED;
         }else {
-           // Response.ResponseBuilder rb = Response.ok(user.map(usr -> usr.getUsername()));
-            LOG.info(user.get().getClienti());
+            //TODO: Generazione del TOKEN AWT ed aggiunta al corpo della risposta
             Response.ResponseBuilder rb = Response.ok(user);
 
             return rb.build();
         }
-        //ritorna token
-
     }
 
+    /**
+     *
+     * @param userId
+     * @return tutti gli utenti diversi da quello passato in input
+     * @// TODO: VERIFICARE TOKEN
+     * @throws Failure
+     * @throws WebApplicationException
+     */
+    @GET
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Path("/{userId}")
+    public List<Utente> getAllOtherUsers(@PathParam(value = "userId") String userId) throws Failure, WebApplicationException {
+        LOG.info("GET ALL USERS START");
+        List<Utente> usersList = repository.findOtherUsers(Long.parseLong(userId));
+        return usersList;
+    }
+
+    /**
+     *
+     * @param createRequest
+     * @return Utente appena creato
+     * @throws Failure
+     * @throws WebApplicationException
+     */
     @POST
     @Transactional
     public Response createUser(@Valid CreateUserRequest createRequest) throws Failure, WebApplicationException {
         LOG.info("USER CREATION START");
-         Utente utente = new Utente();
+        Utente utente = new Utente();
         utente.setNome(createRequest.getNome());
         utente.setCognome(createRequest.getCognome());
         utente.setUsername(createRequest.getUsername());
@@ -103,12 +123,20 @@ public class UtenteService {
         return rb.build();
     }
 
+    /**
+     * Servizio per l'aggiornamento della lista di clienti associati all'utente passato in input
+     *
+     * @param updateRequest
+     * @return l'utente con la lista aggiornata di clienti
+     * @throws Failure
+     * @throws WebApplicationException
+     */
     @POST
     @Transactional
     @Path("/addCliente")
     public Response updateClientiAssociati(@Valid UpdateUserRequest updateRequest) throws Failure, WebApplicationException {
         LOG.info("USER CUSTOMERS UPDATE START FOR USER " + updateRequest.getIdUtente() + " AND CUSTOMER "+ updateRequest.getIdClienteDaAggiungere());
-       Utente utente = repository.findById(updateRequest.getIdUtente());
+        Utente utente = repository.findById(updateRequest.getIdUtente());
         if (utente != null) {
             Set<Cliente> listaClienti = utente.getClienti();
             Cliente nuovoCliente = clienteRepository.findById(updateRequest.getIdClienteDaAggiungere());
@@ -117,13 +145,10 @@ public class UtenteService {
                 utente.setClienti(listaClienti);
                 try {
                     repository.persistAndFlush(utente);
-
                 } catch (Exception e) {
                     return new ServerResponse(e.getMessage(), 500, new Headers<Object>());
                 }
-
             }
-
         }
 
         Response.ResponseBuilder rb = Response.ok();

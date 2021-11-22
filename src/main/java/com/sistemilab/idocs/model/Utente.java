@@ -5,6 +5,7 @@ import io.quarkus.hibernate.orm.panache.PanacheEntityBase;
 
 import javax.persistence.*;
 import java.util.HashSet;
+import java.util.Objects;
 import java.util.Set;
 
 @Table(name = "utente", indexes = {
@@ -93,5 +94,31 @@ public class Utente extends PanacheEntityBase {
 
     public void setClienti(Set<Cliente> clienti) {
         this.clienti = clienti;
+    }
+
+    @Override
+    public String toString() {
+        return "Utente{" +
+                "id=" + id +
+                ", clienti=" + clienti +
+                ", username='" + username + '\'' +
+                ", mail='" + mail + '\'' +
+                ", nome='" + nome + '\'' +
+                ", cognome='" + cognome + '\'' +
+                ", password='" + password + '\'' +
+                '}';
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Utente utente = (Utente) o;
+        return Objects.equals(id, utente.id) && Objects.equals(clienti, utente.clienti) && Objects.equals(username, utente.username) && Objects.equals(mail, utente.mail) && Objects.equals(nome, utente.nome) && Objects.equals(cognome, utente.cognome) && Objects.equals(password, utente.password);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, clienti, username, mail, nome, cognome, password);
     }
 }

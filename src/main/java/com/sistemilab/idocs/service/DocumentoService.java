@@ -36,7 +36,13 @@ public class DocumentoService {
         this.progettoRepository  = progettoRepository;
     }
 
-
+    /**
+     * Servizio che restituisce tutti i documenti associati al progetto passato in input
+     * @param projectId
+     * @return Lista di documenti
+     * @throws Failure
+     * @throws WebApplicationException
+     */
     @GET
     @Path("/{projectId}")
     public List<Documento> list(@PathParam(value = "projectId") String projectId) throws Failure, WebApplicationException {
@@ -45,6 +51,14 @@ public class DocumentoService {
         return progetto.getDocumenti().stream().collect(Collectors.toList());
     }
 
+    /**
+     * Servizio per la creazione di un nuovo documento
+     *
+     * @param createDocumentoRequest
+     * @return Il documento appena creato
+     * @throws Failure
+     * @throws WebApplicationException
+     */
     @POST
     @Transactional
     public Response createDocumento(@Valid CreateDocumentoRequest createDocumentoRequest) throws Failure, WebApplicationException {
@@ -58,29 +72,27 @@ public class DocumentoService {
         documento.setDataCaricamento(LocalDate.now());
         try {
             documentoRepository.create(documento);
-
             Progetto progetto = progettoRepository.findById(createDocumentoRequest.getIdProgetto());
-
             Set<Documento> documenti = progetto.getDocumenti();
-
-            LOG.info("DOCUMENTI DEL PROGETTO " + createDocumentoRequest.getIdProgetto() + " PRIMA DELL'AGGIORNAMENTO: " + documenti.stream().count());
-
             documenti.add(documento);
             progetto.setDocumenti(documenti);
             progettoRepository.persistAndFlush(progetto);
-
-            LOG.info("DOCUMENTI DEL PROGETTO " + createDocumentoRequest.getIdProgetto() + " DOPO L'AGGIORNAMENTO: " + progetto.getDocumenti().stream().count());
-
-
         } catch (Exception e) {
             return new ServerResponse(e.getMessage(), 500, new Headers<Object>());
         }
-
         Response.ResponseBuilder rb = Response.ok(documento);
         return rb.build();
-
     }
 
+    /**
+     * Servizio tramite il quale approvare il documento passato in input
+     * @// TODO: centralizzare in unico servizio che gestisce approvazione/rifiuto
+     *
+     * @param documentId
+     * @return
+     * @throws Failure
+     * @throws WebApplicationException
+     */
     @PUT
     @Transactional
     @Path("/approva/{documentId}")
@@ -89,20 +101,24 @@ public class DocumentoService {
         Documento documento = documentoRepository.findById(Long.parseLong(documentId));
         documento.setStato("APPROVATO");
         documento.setDataCambioStato(LocalDate.now());
-
         try {
             documentoRepository.persistAndFlush(documento);
-
-
         } catch (Exception e) {
             return new ServerResponse(e.getMessage(), 500, new Headers<Object>());
         }
-
         Response.ResponseBuilder rb = Response.ok(documento);
         return rb.build();
-
     }
 
+    /**
+     * Servizio tramite il quale rifiutare il documento passato in input
+     * @// TODO: centralizzare in unico servizio che gestisce approvazione/rifiuto
+     *
+     * @param documentId
+     * @return
+     * @throws Failure
+     * @throws WebApplicationException
+     */
     @PUT
     @Transactional
     @Path("/rifiuta/{documentId}")
@@ -114,17 +130,21 @@ public class DocumentoService {
 
         try {
             documentoRepository.persistAndFlush(documento);
-
-
         } catch (Exception e) {
             return new ServerResponse(e.getMessage(), 500, new Headers<Object>());
         }
-
         Response.ResponseBuilder rb = Response.ok(documento);
         return rb.build();
-
     }
 
+    /**
+     * Servizio per la cancellazione di un documento
+     *
+     * @param idDocumento
+     * @return
+     * @throws Failure
+     * @throws WebApplicationException
+     */
     @DELETE
     @Transactional
     @Path("/{idDocumento}")
